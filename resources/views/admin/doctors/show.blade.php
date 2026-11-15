@@ -16,7 +16,7 @@
             <a href="{{ route('admin.doctor.index') }}" class="btn-outline">← Retour</a>
         </div>
     </div>
-
+        <a href="{{ route('appointment.create', $doctor) }}" class="btn-primary">Prendre rendez-vous</a>
     <div class="grid gap-6 md:grid-cols-2">
         <div data-tilt="6" class="glass rounded-2xl p-6">
             <h2 class="mb-3 font-bold">Informations</h2>

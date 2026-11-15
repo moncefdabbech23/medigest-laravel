@@ -11,6 +11,7 @@ use App\Http\Controllers\DoctorController as PublicDoctorController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SpecialtyController as PublicSpecialtyController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AppointmentController; 
 
 // ===================== Site public =====================
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -36,4 +37,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     // --- Personne B ---
     Route::resource('patients', AdminPatientController::class)->names('patient');     // B6
+    Route::get('/doctors/{doctor}/book', [AppointmentController::class, 'create'])->name('appointment.create');
+    Route::post('/doctors/{doctor}/book', [AppointmentController::class, 'store'])->name('appointment.store');
 });

@@ -10,4 +10,5 @@
         @include('admin.patients._form', ['patient' => $patient])
         <button type="submit" class="btn-primary">Mettre à jour</button>
     </form>
+    
 @endsection

@@ -20,5 +20,7 @@
     @if (Route::has('patient.record')) {{-- lien actif après l'étape B11 --}}
         <a href="{{ route('patient.record', $patient) }}" class="btn-primary mt-6 inline-block">Voir le dossier
             médical</a>
+
+        
     @endif
 @endsection
