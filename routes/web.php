@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AppointmentController; 
 use App\Http\Controllers\PatientAppointmentController; 
 use App\Http\Controllers\DoctorAppointmentController;  
+use App\Http\Controllers\ConsultationController;  
 
 // ===================== Site public =====================
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -53,6 +54,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
     'index'])->name('doctor.appointment.index');
     Route::patch('/appointments/{appointment}/status', [DoctorAppointmentController::class,
     'updateStatus'])->name('appointment.status');
+    Route::get('/appointments/{appointment}/consultation/create', [ConsultationController::class,
+    'create'])->name('consultation.create');
+    Route::post('/appointments/{appointment}/consultation', [ConsultationController::class,
+    'store'])->name('consultation.store');
+
 
 
 });
