@@ -12,6 +12,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SpecialtyController as PublicSpecialtyController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AppointmentController; 
+use App\Http\Controllers\PatientAppointmentController; 
 
 // ===================== Site public =====================
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -39,4 +40,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('patients', AdminPatientController::class)->names('patient');     // B6
     Route::get('/doctors/{doctor}/book', [AppointmentController::class, 'create'])->name('appointment.create');
     Route::post('/doctors/{doctor}/book', [AppointmentController::class, 'store'])->name('appointment.store');
+    Route::get('/patients/{patient}/appointments', [PatientAppointmentController::class,
+    'index'])->name('patient.appointment.index');
+    Route::get('/appointments/{appointment}/edit', [PatientAppointmentController::class,
+    'edit'])->name('appointment.edit');
+    Route::put('/appointments/{appointment}', [PatientAppointmentController::class,
+    'update'])->name('appointment.update');
+    Route::patch('/appointments/{appointment}/cancel', [PatientAppointmentController::class,
+    'cancel'])->name('appointment.cancel');
+
 });
