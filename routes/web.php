@@ -16,6 +16,8 @@ use App\Http\Controllers\PatientAppointmentController;
 use App\Http\Controllers\DoctorAppointmentController;  
 use App\Http\Controllers\ConsultationController;  
 use App\Http\Controllers\MedicalRecordController; 
+use App\Http\Controllers\NotificationController; 
+use App\Http\Controllers\PrescriptionController;
 
 // ===================== Site public =====================
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -60,6 +62,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('/appointments/{appointment}/consultation', [ConsultationController::class,
     'store'])->name('consultation.store');
     Route::get('/patients/{patient}/record', [MedicalRecordController::class, 'show'])->name('patient.record');
+    Route::get('/prescriptions/{prescription}', [PrescriptionController::class, 'show'])->name('prescription.show');
+    Route::get('/users/{user}/notifications', [NotificationController::class, 'index'])->name('notification.index');
+    Route::post('/users/{user}/notifications/read', [NotificationController::class,
+    'markAllRead'])->name('notification.read');
+
 
 
 
