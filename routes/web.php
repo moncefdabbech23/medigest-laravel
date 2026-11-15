@@ -13,6 +13,7 @@ use App\Http\Controllers\SpecialtyController as PublicSpecialtyController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AppointmentController; 
 use App\Http\Controllers\PatientAppointmentController; 
+use App\Http\Controllers\DoctorAppointmentController;  
 
 // ===================== Site public =====================
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -48,5 +49,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
     'update'])->name('appointment.update');
     Route::patch('/appointments/{appointment}/cancel', [PatientAppointmentController::class,
     'cancel'])->name('appointment.cancel');
+    Route::get('/doctors/{doctor}/appointments', [DoctorAppointmentController::class,
+    'index'])->name('doctor.appointment.index');
+    Route::patch('/appointments/{appointment}/status', [DoctorAppointmentController::class,
+    'updateStatus'])->name('appointment.status');
+
 
 });
