@@ -7,12 +7,15 @@
             <h1 class="text-2xl font-bold">{{ $doctor->user->name }}</h1>
             <p class="text-slate-500">{{ $doctor->specialty->icon }} {{ $doctor->specialty->name }} · {{ $doctor->city->name }}</p>
         </div>
-        <div class="flex gap-2">
+        <div class="flex flex-wrap gap-2">
+            <a href="{{ route('doctor.availability.edit', $doctor) }}" class="btn-outline">Modifier les horaires</a>
+            @if ($doctor->is_validated)
+                <a href="{{ route('doctor.show', $doctor) }}" class="btn-outline">Voir la fiche publique</a>
+            @endif
             <a href="{{ route('admin.doctor.edit', $doctor) }}" class="btn-outline">Éditer</a>
             <a href="{{ route('admin.doctor.index') }}" class="btn-outline">← Retour</a>
         </div>
     </div>
-    <a href="{{ route('doctor.availability.edit', $doctor) }}" class="btn-outline">Modifier les horaires</a>
 
     <div class="grid gap-6 md:grid-cols-2">
         <div data-tilt="6" class="glass rounded-2xl p-6">
