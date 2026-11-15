@@ -1,22 +1,23 @@
 <?php
+
 namespace App\Models;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-class Prescription extends Model
+
+class LabTest extends Model
 {
-    protected $fillable = ['consultation_id', 'date'];
-    protected $casts = [
-        'date' => 'date',
-    ];
+    protected $fillable = ['consultation_id', 'patient_id', 'type', 'result'];
+
+    // Une analyse appartient à une consultation
     public function consultation(): BelongsTo
     {
         return $this->belongsTo(Consultation::class);
     }
-    // Relation N-N avec les colonnes de la table pivot
-    public function medications(): BelongsToMany
+
+    // ... et à un patient
+    public function patient(): BelongsTo
     {
-        return $this->belongsToMany(Medication::class)
-            ->withPivot('dosage', 'frequency', 'duration');
+        return $this->belongsTo(Patient::class);
     }
 }

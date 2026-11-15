@@ -15,6 +15,9 @@ class DatabaseSeeder extends Seeder
             MedicationSeeder::class,
             AdminSeeder::class,
             DoctorSeeder::class,
+            PatientSeeder::class,
+            AppointmentSeeder::class,
+            ConsultationSeeder::class,
 
             // Personne B : ses seeders viendront ici (PatientSeeder, AppointmentSeeder, ConsultationSeeder)
         ]);
