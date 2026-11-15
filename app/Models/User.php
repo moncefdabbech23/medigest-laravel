@@ -7,11 +7,11 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Relations\HasOne; 
 
-#[Fillable(['name', 'email', 'password'])]
+#[Fillable(['name', 'email', 'password', 'role'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -30,9 +30,16 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    public function patient(): HasOne
-{
-    return $this->hasOne(Patient::class);
-}
 
+    // Un utilisateur patient a UNE fiche patient (relation 1-1)
+    public function patient(): HasOne
+    {
+        return $this->hasOne(Patient::class);
+    }
+
+    // Un utilisateur médecin a UNE fiche médecin (relation 1-1)
+    public function doctor(): HasOne
+    {
+        return $this->hasOne(Doctor::class);
+    }
 }
