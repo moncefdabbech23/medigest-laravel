@@ -12,6 +12,7 @@
             <a href="{{ route('admin.doctor.index') }}" class="btn-outline">← Retour</a>
         </div>
     </div>
+    <a href="{{ route('doctor.availability.edit', $doctor) }}" class="btn-outline">Modifier les horaires</a>
 
     <div class="grid gap-6 md:grid-cols-2">
         <div data-tilt="6" class="glass rounded-2xl p-6">
