@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+
 class Doctor extends Model
 {
     protected $fillable = [
@@ -40,5 +41,9 @@ class Doctor extends Model
     public function availabilities(): HasMany
     {
         return $this->hasMany(Availability::class)->orderBy('weekday');
+    }
+    public function appointments(): HasMany
+    {
+        return $this->hasMany(Appointment::class);
     }
 }

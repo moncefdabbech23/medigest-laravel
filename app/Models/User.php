@@ -42,4 +42,8 @@ class User extends Authenticatable
     {
         return $this->hasOne(Doctor::class);
     }
+    public function userNotifications(): HasMany
+    {
+        return $this->hasMany(UserNotification::class);
+    }
 }

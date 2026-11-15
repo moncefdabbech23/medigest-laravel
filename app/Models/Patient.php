@@ -1,7 +1,8 @@
 <?php
 namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;   
+use Illuminate\Database\Eloquent\Relations\HasMany; 
 class Patient extends Model
 {
     protected $fillable = [
@@ -25,4 +26,17 @@ class Patient extends Model
             ->values()
             ->all();
     }
+    public function appointments(): HasMany
+    {
+        return $this->hasMany(Appointment::class);
+    }
+    public function labTests(): HasMany
+    {
+        return $this->hasMany(LabTest::class);
+    }
+    public function radiologies(): HasMany
+    {
+        return $this->hasMany(Radiology::class);
+    }
+
 }
