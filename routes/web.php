@@ -15,6 +15,7 @@ use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\PatientAppointmentController; 
 use App\Http\Controllers\DoctorAppointmentController;  
 use App\Http\Controllers\ConsultationController;  
+use App\Http\Controllers\MedicalRecordController; 
 
 // ===================== Site public =====================
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -58,6 +59,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     'create'])->name('consultation.create');
     Route::post('/appointments/{appointment}/consultation', [ConsultationController::class,
     'store'])->name('consultation.store');
+    Route::get('/patients/{patient}/record', [MedicalRecordController::class, 'show'])->name('patient.record');
 
 
 
