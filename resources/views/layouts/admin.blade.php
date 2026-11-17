@@ -51,6 +51,11 @@
 
         <main class="mx-auto max-w-6xl px-5 py-8">
             @include('partials.flash')
+            @if (auth()->user()->role === 'doctor' && ! auth()->user()->doctor?->is_validated)
+    <x-alert type="warning" class="mb-6">
+        ⏳ Votre compte attend la validation de l’administrateur : vous n’apparaissez pas encore dans l’annuaire.
+    </x-alert>
+@endif
             @yield('content')
         </main>
     </div>

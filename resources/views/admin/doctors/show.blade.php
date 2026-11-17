@@ -8,7 +8,7 @@
             <p class="text-slate-500">{{ $doctor->specialty->icon }} {{ $doctor->specialty->name }} · {{ $doctor->city->name }}</p>
         </div>
         <div class="flex flex-wrap gap-2">
-            <a href="{{ route('doctor.availability.edit', $doctor) }}" class="btn-outline">Modifier les horaires</a>
+           
             @if ($doctor->is_validated)
                 <a href="{{ route('doctor.show', $doctor) }}" class="btn-outline">Voir la fiche publique</a>
             @endif

@@ -19,6 +19,7 @@ use App\Http\Controllers\PatientAppointmentController;
 use App\Http\Controllers\PrescriptionController;
 use App\Http\Controllers\SpecialtyController as PublicSpecialtyController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DoctorProfileController;
 
 // ===================== Site public (tout le monde) =====================
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -72,8 +73,7 @@ Route::middleware('auth')->group(function () {
 
     // ---------- TEMPORAIRE : routes de la partie 2 ----------
     // Elles seront SUPPRIMÉES par A16 (horaires), B13 (patient) et B14 (médecin).
-    Route::get('/doctors/{doctor}/availabilities', [DoctorAvailabilityController::class, 'edit'])->name('doctor.availability.edit');     // A10
-    Route::put('/doctors/{doctor}/availabilities', [DoctorAvailabilityController::class, 'update'])->name('doctor.availability.update'); // A10
+   
 
     Route::get('/doctors/{doctor}/book', [AppointmentController::class, 'create'])->name('appointment.create');                          // B7
     Route::post('/doctors/{doctor}/book', [AppointmentController::class, 'store'])->name('appointment.store');                           // B7
@@ -90,3 +90,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/users/{user}/notifications', [NotificationController::class, 'index'])->name('notification.index');                      // B12
     Route::post('/users/{user}/notifications/read', [NotificationController::class, 'markAllRead'])->name('notification.read');           // B12
 });
+    // --- Personne A (A16) ---
+    Route::get('/availabilities', [DoctorAvailabilityController::class, 'edit'])->name('availability.edit');
+    Route::put('/availabilities', [DoctorAvailabilityController::class, 'update'])->name('availability.update');
+    Route::get('/profile', [DoctorProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [DoctorProfileController::class, 'update'])->name('profile.update');

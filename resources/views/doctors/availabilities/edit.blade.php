@@ -3,11 +3,11 @@
 
 @section('content')
     <div class="mb-6">
-        <h1 class="text-2xl font-bold">Horaires du cabinet</h1>
+        <h1 class="text-2xl font-bold">Mes horaires</h1>
         <p class="text-slate-500">{{ $doctor->user->name }} · {{ $doctor->specialty->name }}</p>
     </div>
 
-    <form method="POST" action="{{ route('doctor.availability.update', $doctor) }}" class="glass space-y-4 rounded-2xl p-6">
+    <form method="POST" action="{{ route('doctor.availability.update') }}" class="glass space-y-4 rounded-2xl p-6">
         @csrf
         @method('PUT')
 
@@ -26,15 +26,13 @@
             @endphp
 
             <div class="grid items-center gap-3 rounded-xl border border-white/70 bg-white/40 p-3 md:grid-cols-[140px_1fr_1fr_1fr]">
-                <label class="flex items-center gap-2 !mb-0">
+                <label class="!mb-0 flex items-center gap-2">
                     <input type="hidden" name="availabilities[{{ $day }}][is_active]" value="0">
                     <input type="checkbox" name="availabilities[{{ $day }}][is_active]" value="1" @checked($active)>
                     {{ \App\Models\Availability::DAYS[$day] }}
                 </label>
-
                 <input type="time" name="availabilities[{{ $day }}][start_time]" value="{{ $start }}" aria-label="Début">
                 <input type="time" name="availabilities[{{ $day }}][end_time]" value="{{ $end }}" aria-label="Fin">
-
                 <select name="availabilities[{{ $day }}][slot_duration]" aria-label="Durée">
                     @foreach ($durations as $minutes)
                         <option value="{{ $minutes }}" @selected($duration == $minutes)>{{ $minutes }} min</option>
@@ -44,7 +42,6 @@
         @endforeach
 
         <p class="text-xs text-slate-500">Décochez un jour pour le fermer. Les patients ne pourront réserver que les jours cochés.</p>
-
-        <button type="submit" class="btn-primary">Enregistrer les horaires</button>
+        <button type="submit" class="btn-primary">Enregistrer mes horaires</button>
     </form>
 @endsection
