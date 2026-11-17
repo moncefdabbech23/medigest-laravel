@@ -20,6 +20,25 @@ document.querySelectorAll('[data-tilt]').forEach((card) => {
         card.style.setProperty('--go', '0');
     });
 });
+// Connexion / inscription : faire glisser le panneau sans recharger la page
+document.querySelectorAll('[data-auth-switch]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+        const box = document.querySelector('[data-auth]');
+        if (!box) return;
+        const toRegister = btn.dataset.authSwitch === 'register';
+        box.classList.toggle('is-register', toRegister);
+        // l'adresse change aussi (/login ou /register), sans rechargement
+        history.replaceState(null, '', toRegister ? box.dataset.registerUrl : box.dataset.loginUrl);
+    });
+});
+
+// Comptes de démonstration : remplir le formulaire de connexion en un clic
+document.querySelectorAll('[data-fill-email]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+        document.getElementById('login_email').value = btn.dataset.fillEmail;
+        document.getElementById('login_password').value = btn.dataset.fillPassword;
+    });
+});
 
 // Menu latéral sur mobile
 document.querySelectorAll('[data-drawer-toggle]').forEach((btn) => {

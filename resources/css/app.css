@@ -149,6 +149,55 @@
     transition: opacity .3s;
     mix-blend-mode: soft-light;
 }
+/* =========================================================
+   Page connexion / inscription : panneau qui glisse (A13)
+   ========================================================= */
+.auth-box { position: relative; overflow: hidden; }
+
+/* Ordinateur : deux formulaires côte à côte + panneau coloré qui glisse */
+@media (min-width: 1024px) {
+    .auth-box { min-height: 640px; }
+    .auth-form {
+        position: absolute; top: 0; height: 100%; width: 50%;
+        display: flex; align-items: center; overflow-y: auto; padding: 2rem 3rem;
+        transition: transform .7s cubic-bezier(.77, 0, .18, 1), opacity .45s ease;
+    }
+    .auth-login { left: 0; z-index: 2; }
+    .auth-register { left: 0; opacity: 0; z-index: 1; pointer-events: none; }
+    .auth-box.is-register .auth-login { transform: translateX(100%); opacity: 0; pointer-events: none; }
+    .auth-box.is-register .auth-register { transform: translateX(100%); opacity: 1; z-index: 5; pointer-events: auto; }
+
+    .auth-overlay-wrap {
+        position: absolute; top: 0; left: 50%; width: 50%; height: 100%; overflow: hidden; z-index: 100;
+        border-radius: 120px 0 0 120px;
+        transition: transform .7s cubic-bezier(.77, 0, .18, 1), border-radius .7s;
+    }
+    .auth-box.is-register .auth-overlay-wrap { transform: translateX(-100%); border-radius: 0 120px 120px 0; }
+    .auth-overlay {
+        position: relative; left: -100%; width: 200%; height: 100%;
+        transition: transform .7s cubic-bezier(.77, 0, .18, 1);
+    }
+    .auth-box.is-register .auth-overlay { transform: translateX(50%); }
+    .auth-panel {
+        position: absolute; top: 0; width: 50%; height: 100%;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        text-align: center; padding: 0 3rem; color: #fff;
+        transition: transform .7s cubic-bezier(.77, 0, .18, 1);
+    }
+    .auth-panel-left { transform: translateX(-20%); }
+    .auth-box.is-register .auth-panel-left { transform: translateX(0); }
+    .auth-panel-right { right: 0; }
+    .auth-box.is-register .auth-panel-right { transform: translateX(20%); }
+}
+
+/* Mobile : un seul formulaire à la fois */
+@media (max-width: 1023px) {
+    .auth-form { padding: 1.5rem; }
+    .auth-overlay-wrap { display: none; }
+    .auth-box .auth-register { display: none; }
+    .auth-box.is-register .auth-login { display: none; }
+    .auth-box.is-register .auth-register { display: block; }
+}
 
 /* Cube 3D */
 .scene { perspective: 1200px; }
