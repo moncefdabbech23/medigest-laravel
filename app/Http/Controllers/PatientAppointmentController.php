@@ -37,7 +37,7 @@ class PatientAppointmentController extends Controller
         ]);
         if (! $slotService->isFree($appointment->doctor, $data['date'], $data['time'], $appointment->id)) {
             return back()->withErrors(['time' => 'Ce créneau n’est pas disponible.'])->withInput();
-MediGest · Personne B · guide complet page 31
+
         }
         // Un rendez-vous reporté doit être confirmé à nouveau par le médecin
         $appointment->update($data + ['status' => Appointment::PENDING]);

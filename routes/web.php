@@ -6,18 +6,18 @@ use App\Http\Controllers\Admin\DoctorController;
 use App\Http\Controllers\Admin\MedicationController;
 use App\Http\Controllers\Admin\PatientController as AdminPatientController;
 use App\Http\Controllers\Admin\SpecialtyController;
+use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\ConsultationController;
+use App\Http\Controllers\DoctorAppointmentController;
 use App\Http\Controllers\DoctorAvailabilityController;
 use App\Http\Controllers\DoctorController as PublicDoctorController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MedicalRecordController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\PatientAppointmentController;
+use App\Http\Controllers\PrescriptionController;
 use App\Http\Controllers\SpecialtyController as PublicSpecialtyController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AppointmentController; 
-use App\Http\Controllers\PatientAppointmentController; 
-use App\Http\Controllers\DoctorAppointmentController;  
-use App\Http\Controllers\ConsultationController;  
-use App\Http\Controllers\MedicalRecordController; 
-use App\Http\Controllers\NotificationController; 
-use App\Http\Controllers\PrescriptionController;
 
 // ===================== Site public =====================
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -29,6 +29,23 @@ Route::get('/specialties/{specialty}', [PublicSpecialtyController::class, 'show'
 // Temporaire : le médecin est dans l'URL jusqu'à la partie 3
 Route::get('/doctors/{doctor}/availabilities', [DoctorAvailabilityController::class, 'edit'])->name('doctor.availability.edit');   // A10
 Route::put('/doctors/{doctor}/availabilities', [DoctorAvailabilityController::class, 'update'])->name('doctor.availability.update'); // A10
+
+// ===================== Espaces patient et médecin (Personne B) =====================
+// Temporaire : l'identifiant est dans l'URL jusqu'à la partie 3
+Route::get('/doctors/{doctor}/book', [AppointmentController::class, 'create'])->name('appointment.create');   // B7
+Route::post('/doctors/{doctor}/book', [AppointmentController::class, 'store'])->name('appointment.store');    // B7
+Route::get('/patients/{patient}/appointments', [PatientAppointmentController::class, 'index'])->name('patient.appointment.index'); // B8
+Route::get('/appointments/{appointment}/edit', [PatientAppointmentController::class, 'edit'])->name('appointment.edit');           // B8
+Route::put('/appointments/{appointment}', [PatientAppointmentController::class, 'update'])->name('appointment.update');            // B8
+Route::patch('/appointments/{appointment}/cancel', [PatientAppointmentController::class, 'cancel'])->name('appointment.cancel');   // B8
+Route::get('/doctors/{doctor}/appointments', [DoctorAppointmentController::class, 'index'])->name('doctor.appointment.index');     // B9
+Route::patch('/appointments/{appointment}/status', [DoctorAppointmentController::class, 'updateStatus'])->name('appointment.status'); // B9
+Route::get('/appointments/{appointment}/consultation/create', [ConsultationController::class, 'create'])->name('consultation.create'); // B10
+Route::post('/appointments/{appointment}/consultation', [ConsultationController::class, 'store'])->name('consultation.store');        // B10
+Route::get('/patients/{patient}/record', [MedicalRecordController::class, 'show'])->name('patient.record');                          // B11
+Route::get('/prescriptions/{prescription}', [PrescriptionController::class, 'show'])->name('prescription.show');                     // B12
+Route::get('/users/{user}/notifications', [NotificationController::class, 'index'])->name('notification.index');                     // B12
+Route::post('/users/{user}/notifications/read', [NotificationController::class, 'markAllRead'])->name('notification.read');          // B12
 
 // ===================== Back-office =====================
 Route::prefix('admin')->name('admin.')->group(function () {
@@ -43,31 +60,4 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     // --- Personne B ---
     Route::resource('patients', AdminPatientController::class)->names('patient');     // B6
-    Route::get('/doctors/{doctor}/book', [AppointmentController::class, 'create'])->name('appointment.create');
-    Route::post('/doctors/{doctor}/book', [AppointmentController::class, 'store'])->name('appointment.store');
-    Route::get('/patients/{patient}/appointments', [PatientAppointmentController::class,
-    'index'])->name('patient.appointment.index');
-    Route::get('/appointments/{appointment}/edit', [PatientAppointmentController::class,
-    'edit'])->name('appointment.edit');
-    Route::put('/appointments/{appointment}', [PatientAppointmentController::class,
-    'update'])->name('appointment.update');
-    Route::patch('/appointments/{appointment}/cancel', [PatientAppointmentController::class,
-    'cancel'])->name('appointment.cancel');
-    Route::get('/doctors/{doctor}/appointments', [DoctorAppointmentController::class,
-    'index'])->name('doctor.appointment.index');
-    Route::patch('/appointments/{appointment}/status', [DoctorAppointmentController::class,
-    'updateStatus'])->name('appointment.status');
-    Route::get('/appointments/{appointment}/consultation/create', [ConsultationController::class,
-    'create'])->name('consultation.create');
-    Route::post('/appointments/{appointment}/consultation', [ConsultationController::class,
-    'store'])->name('consultation.store');
-    Route::get('/patients/{patient}/record', [MedicalRecordController::class, 'show'])->name('patient.record');
-    Route::get('/prescriptions/{prescription}', [PrescriptionController::class, 'show'])->name('prescription.show');
-    Route::get('/users/{user}/notifications', [NotificationController::class, 'index'])->name('notification.index');
-    Route::post('/users/{user}/notifications/read', [NotificationController::class,
-    'markAllRead'])->name('notification.read');
-
-
-
-
 });

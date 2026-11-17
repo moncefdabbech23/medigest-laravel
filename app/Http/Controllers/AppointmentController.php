@@ -15,7 +15,7 @@ class AppointmentController extends Controller
         $slots = $slotService->slots($doctor, $date);
         // Temporaire (avant la partie 3) : on choisit le patient dans une liste
         $patients = Patient::with('user')->get();
-        return view('appointments.create', compact('doctor', 'date', 'slots', 'patients'));
+        return view('patients.appointments.create', compact('doctor', 'date', 'slots', 'patients'));
     }
     public function store(Request $request, Doctor $doctor, SlotService $slotService)
     {

@@ -38,7 +38,7 @@ class ConsultationController extends Controller
             'items.*.duration' => 'required|max:100',
             'lab_tests' => 'array',
             'lab_tests.*' => 'string|max:150',
-MediGest · Personne B · guide complet page 37
+
             'radiologies' => 'array',
             'radiologies.*' => 'string|max:150',
         ]);

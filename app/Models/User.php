@@ -7,6 +7,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -42,6 +43,8 @@ class User extends Authenticatable
     {
         return $this->hasOne(Doctor::class);
     }
+
+    // Un utilisateur a PLUSIEURS notifications (relation 1-N)
     public function userNotifications(): HasMany
     {
         return $this->hasMany(UserNotification::class);
