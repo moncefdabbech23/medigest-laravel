@@ -49,4 +49,33 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserNotification::class);
     }
+    // Libellé du rôle en français : $user->roleLabel()
+public function roleLabel(): string
+{
+    return ['admin' => 'Administrateur', 'doctor' => 'Médecin', 'patient' => 'Patient'][$this->role] ?? $this->role;
+}
+
+// Page d'accueil de l'utilisateur selon son rôle : $user->homeUrl()
+public function homeUrl(): string
+{
+    $candidates = match ($this->role) {
+        'admin' => ['admin.dashboard'],
+        'doctor' => ['doctor.appointment.index'],
+        default => ['my.appointment.index', 'patient.appointment.index'],
+    };
+
+    foreach ($candidates as $name) {
+        if (\Illuminate\Support\Facades\Route::has($name)) {
+            $needed = \Illuminate\Support\Facades\Route::getRoutes()->getByName($name)->parameterNames();
+            $params = array_intersect_key(
+                ['doctor' => $this->doctor?->id, 'patient' => $this->patient?->id],
+                array_flip($needed)
+            );
+
+            return route($name, $params);
+        }
+    }
+
+    return route('home');
+}
 }

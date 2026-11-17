@@ -6,7 +6,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Route;
 
 class AuthController extends Controller
 {
@@ -35,7 +34,7 @@ class AuthController extends Controller
             $request->session()->regenerate();   // sécurité : nouvelle session après connexion
 
             // intended() : revenir à la page demandée avant la connexion (ex. réserver un rendez-vous)
-            return redirect()->intended($this->homeFor($request->user()))
+            return redirect()->intended($request->user()->homeUrl())
                 ->with('success', 'Bienvenue ' . $request->user()->name . ' !');
         }
 
@@ -71,7 +70,7 @@ class AuthController extends Controller
         Auth::login($user);
         $request->session()->regenerate();
 
-        return redirect()->intended($this->homeFor($user))
+        return redirect()->intended($user->homeUrl())
             ->with('success', 'Compte créé. Bienvenue sur MediGest !');
     }
 
@@ -83,24 +82,5 @@ class AuthController extends Controller
         $request->session()->regenerateToken();  // nouveau jeton CSRF
 
         return to_route('home')->with('success', 'Vous êtes déconnecté.');
-    }
-
-    // Page d'accueil de chaque rôle après la connexion
-    private function homeFor(User $user): string
-    {
-        return match ($user->role) {
-            'admin' => route('admin.dashboard'),
-
-            'doctor' => Route::has('doctor.appointment.index') && $user->doctor
-                ? route('doctor.appointment.index', ['doctor' => $user->doctor->id])
-                : route('home'),
-
-            default => match (true) {
-                Route::has('my.appointment.index') => route('my.appointment.index'),           // après B13
-                Route::has('patient.appointment.index') && (bool) $user->patient
-                    => route('patient.appointment.index', $user->patient),                    // partie 2
-                default => route('home'),
-            },
-        };
     }
 }
