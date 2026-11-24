@@ -1,22 +1,19 @@
 <?php
-
 namespace App\Http\Controllers;
-
-use App\Models\User;
-
+use Illuminate\Http\Request;
 class NotificationController extends Controller
 {
-    // Liste des notifications d'un utilisateur
-    public function index(User $user)
+    // /notifications : les notifications de l'utilisateur connecté (patient, médecin ou admin)
+    public function index(Request $request)
     {
-        $notifications = $user->userNotifications()->latest()->paginate(10);
+        $user = $request->user();
+        $notifications = $user->userNotifications()->latest()->paginate(15);
         return view('notifications.index', compact('user', 'notifications'));
     }
-
-    // Marque toutes les notifications comme lues
-    public function markAllRead(User $user)
+    // POST /notifications/read
+    public function markAllRead(Request $request)
     {
-        $user->userNotifications()->where('is_read', false)->update(['is_read' => true]);
-        return to_route('notification.index', $user)->with('success', 'Notifications marquées comme lues.');
+        $request->user()->userNotifications()->where('is_read', false)->update(['is_read' => true]);
+        return back()->with('success', 'Toutes les notifications sont lues.');
     }
 }

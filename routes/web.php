@@ -38,10 +38,19 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->n
 
 // ===================== Espace patient (patients connectés) =====================
 Route::middleware(['auth', 'role:patient'])->group(function () {
-    // --- Personne B (B13) : /doctors/{doctor}/book ---
+    Route::get('/doctors/{doctor}/book', [AppointmentController::class, 'create'])->name('appointment.create');
+    Route::post('/doctors/{doctor}/book', [AppointmentController::class, 'store'])->name('appointment.store');
 
     Route::prefix('my')->name('my.')->group(function () {
         // --- Personne B (B13, B16) : /my/appointments, /my/record, /my/profile ---
+        Route::get('/appointments', [PatientAppointmentController::class, 'index'])->name('appointment.index');
+        Route::get('/appointments/{appointment}/edit', [PatientAppointmentController::class,
+            'edit'])->name('appointment.edit');
+        Route::put('/appointments/{appointment}', [PatientAppointmentController::class,
+            'update'])->name('appointment.update');
+        Route::patch('/appointments/{appointment}/cancel', [PatientAppointmentController::class,
+            'cancel'])->name('appointment.cancel');
+        Route::get('/record', [MedicalRecordController::class, 'mine'])->name('record');
     });
 });
 
@@ -70,6 +79,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 // ===================== Tous les utilisateurs connectés =====================
 Route::middleware('auth')->group(function () {
     // --- Personne B (B13) : /notifications, /prescriptions/{prescription} ---
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notification.index');
+    Route::post('/notifications/read', [NotificationController::class,
+        'markAllRead'])->name('notification.read');
+    Route::get('/prescriptions/{prescription}', [PrescriptionController::class,
+        'show'])->name('prescription.show');
 
     // ---------- TEMPORAIRE : routes de la partie 2 ----------
     // Elles seront SUPPRIMÉES par A16 (horaires), B13 (patient) et B14 (médecin).
