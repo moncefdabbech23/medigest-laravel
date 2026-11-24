@@ -21,6 +21,7 @@ use App\Http\Controllers\SpecialtyController as PublicSpecialtyController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DoctorProfileController;
 use App\Http\Controllers\MedicalFileController;
+use App\Http\Controllers\ProfileController;
 
 // ===================== Site public (tout le monde) =====================
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -52,6 +53,9 @@ Route::middleware(['auth', 'role:patient'])->group(function () {
         Route::patch('/appointments/{appointment}/cancel', [PatientAppointmentController::class,
             'cancel'])->name('appointment.cancel');
         Route::get('/record', [MedicalRecordController::class, 'mine'])->name('record');
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');           // B16
+        Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');       // B16
+        Route::put('/password', [ProfileController::class, 'updatePassword'])->name('password.update'); // B16
     });
 });
 

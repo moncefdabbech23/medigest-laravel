@@ -78,4 +78,5 @@ public function homeUrl(): string
 
     return route('home');
 }
+#[Fillable(['name', 'email', 'password', 'role', 'avatar'])]
 }
