@@ -59,6 +59,15 @@ Route::middleware(['auth', 'role:doctor'])->prefix('doctor')->name('doctor.')->g
     // --- Personne A (A16) : /doctor/availabilities ---
 
     // --- Personne B (B14, B15) : /doctor/appointments, consultations, dossiers, fichiers ---
+    Route::get('/appointments', [DoctorAppointmentController::class, 'index'])->name('appointment.index');
+    Route::patch('/appointments/{appointment}/status', [DoctorAppointmentController::class,
+        'updateStatus'])->name('appointment.status');
+    Route::get('/appointments/{appointment}/consultation/create', [ConsultationController::class,
+        'create'])->name('consultation.create');
+    Route::post('/appointments/{appointment}/consultation', [ConsultationController::class,
+        'store'])->name('consultation.store');
+    Route::get('/patients/{patient}/record', [MedicalRecordController::class,
+        'forDoctor'])->name('patient.record');
 });
 
 // ===================== Back-office (admin connecté) =====================

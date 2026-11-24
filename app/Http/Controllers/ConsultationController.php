@@ -7,11 +7,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 class ConsultationController extends Controller
 {
-    // /appointments/{appointment}/consultation/create
+    // /doctor/appointments/{appointment}/consultation/create
     public function create(Appointment $appointment)
     {
+        $this->authorizeDoctor($appointment);
         if ($appointment->consultation()->exists()) {
-            return back()->with('success', 'La consultation de ce rendez-vous est déjà enregistrée.');
+            return to_route('doctor.appointment.index')->with('error', 'La consultation de ce rendez-vous est
+                déjà enregistrée.');
         }
         $appointment->load('patient.user', 'doctor.user');
         $medications = Medication::orderBy('name')->get();
@@ -19,7 +21,7 @@ class ConsultationController extends Controller
     }
     public function store(Request $request, Appointment $appointment)
     {
-        // Une seule consultation par rendez-vous (appointment_id est unique)
+        $this->authorizeDoctor($appointment);
         abort_if($appointment->consultation()->exists(), 409, 'Consultation déjà enregistrée.');
         // Ignorer les lignes d'ordonnance et les examens laissés vides
         $request->merge([
@@ -35,26 +37,24 @@ class ConsultationController extends Controller
             'items.*.medication_id' => 'required|integer|exists:medications,id',
             'items.*.dosage' => 'required|max:100',
             'items.*.frequency' => 'required|max:100',
+
             'items.*.duration' => 'required|max:100',
             'lab_tests' => 'array',
             'lab_tests.*' => 'string|max:150',
-
             'radiologies' => 'array',
             'radiologies.*' => 'string|max:150',
         ]);
-        // Sécurité : refuser un médicament auquel le patient est allergique
+        // Refuser un médicament auquel le patient est allergique
         $allergies = $appointment->patient->allergyList();
         $names = Medication::whereIn('id', collect($data['items'])->pluck('medication_id'))->pluck('name');
         foreach ($names as $name) {
             foreach ($allergies as $allergy) {
                 if (str_contains(mb_strtolower($name), $allergy)) {
                     return back()->withErrors(['items' => "Allergie du patient : « $allergy ». $name ne peut
-                        pas être prescrit."])
-                        ->withInput();
+                        pas être prescrit."])->withInput();
                 }
             }
         }
-        // Tout est enregistré ensemble, ou rien (transaction)
         DB::transaction(function () use ($data, $appointment) {
             $consultation = $appointment->consultation()->create([
                 'diagnosis' => $data['diagnosis'],
@@ -62,7 +62,6 @@ class ConsultationController extends Controller
             ]);
             if (! empty($data['items'])) {
                 $prescription = $consultation->prescription()->create(['date' => today()]);
-                // sync() avec les colonnes de la table pivot
                 $prescription->medications()->sync(
                     collect($data['items'])->mapWithKeys(fn ($item) => [
                         $item['medication_id'] => [
@@ -84,7 +83,10 @@ class ConsultationController extends Controller
         });
         UserNotification::send($appointment->patient->user_id, 'Votre dossier médical a été mis à jour par
             votre médecin.');
-        return to_route('doctor.appointment.index', $appointment->doctor_id)
-            ->with('success', 'Consultation enregistrée.');
+        return to_route('doctor.appointment.index')->with('success', 'Consultation enregistrée.');
+    }
+    private function authorizeDoctor(Appointment $appointment): void
+    {
+        abort_unless($appointment->doctor()->is(auth()->user()->doctor), 403);
     }
 }
