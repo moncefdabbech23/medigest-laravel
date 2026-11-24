@@ -20,6 +20,7 @@ use App\Http\Controllers\PrescriptionController;
 use App\Http\Controllers\SpecialtyController as PublicSpecialtyController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DoctorProfileController;
+use App\Http\Controllers\MedicalFileController;
 
 // ===================== Site public (tout le monde) =====================
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -68,6 +69,11 @@ Route::middleware(['auth', 'role:doctor'])->prefix('doctor')->name('doctor.')->g
         'store'])->name('consultation.store');
     Route::get('/patients/{patient}/record', [MedicalRecordController::class,
         'forDoctor'])->name('patient.record');
+
+    Route::patch('/lab-tests/{labTest}', [MedicalFileController::class,
+        'updateLabTest'])->name('lab-test.update');      // B15
+    Route::patch('/radiologies/{radiology}', [MedicalFileController::class,
+        'updateRadiology'])->name('radiology.update'); // B15
 });
 
 // ===================== Back-office (admin connecté) =====================
