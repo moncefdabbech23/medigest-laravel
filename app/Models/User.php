@@ -11,8 +11,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Route;
 
-#[Fillable(['name', 'email', 'password', 'role'])]
+#[Fillable(['name', 'email', 'password', 'role', 'avatar'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -32,51 +33,51 @@ class User extends Authenticatable
         ];
     }
 
-    // Un utilisateur patient a UNE fiche patient (relation 1-1)
+    // Un utilisateur patient a UNE fiche patient (1-1)
     public function patient(): HasOne
     {
         return $this->hasOne(Patient::class);
     }
 
-    // Un utilisateur médecin a UNE fiche médecin (relation 1-1)
+    // Un utilisateur médecin a UNE fiche médecin (1-1)
     public function doctor(): HasOne
     {
         return $this->hasOne(Doctor::class);
     }
 
-    // Un utilisateur a PLUSIEURS notifications (relation 1-N)
+    // Un utilisateur a PLUSIEURS notifications (B4)
     public function userNotifications(): HasMany
     {
         return $this->hasMany(UserNotification::class);
     }
-    // Libellé du rôle en français : $user->roleLabel()
-public function roleLabel(): string
-{
-    return ['admin' => 'Administrateur', 'doctor' => 'Médecin', 'patient' => 'Patient'][$this->role] ?? $this->role;
-}
 
-// Page d'accueil de l'utilisateur selon son rôle : $user->homeUrl()
-public function homeUrl(): string
-{
-    $candidates = match ($this->role) {
-        'admin' => ['admin.dashboard'],
-        'doctor' => ['doctor.appointment.index'],
-        default => ['my.appointment.index', 'patient.appointment.index'],
-    };
-
-    foreach ($candidates as $name) {
-        if (\Illuminate\Support\Facades\Route::has($name)) {
-            $needed = \Illuminate\Support\Facades\Route::getRoutes()->getByName($name)->parameterNames();
-            $params = array_intersect_key(
-                ['doctor' => $this->doctor?->id, 'patient' => $this->patient?->id],
-                array_flip($needed)
-            );
-
-            return route($name, $params);
-        }
+    // Libellé du rôle en français : $user->roleLabel()  (A15)
+    public function roleLabel(): string
+    {
+        return ['admin' => 'Administrateur', 'doctor' => 'Médecin', 'patient' => 'Patient'][$this->role] ?? $this->role;
     }
 
-    return route('home');
-}
-#[Fillable(['name', 'email', 'password', 'role', 'avatar'])]
+    // Page d'accueil de l'utilisateur selon son rôle : $user->homeUrl()  (A15)
+    public function homeUrl(): string
+    {
+        $candidates = match ($this->role) {
+            'admin' => ['admin.dashboard'],
+            'doctor' => ['doctor.appointment.index'],
+            default => ['my.appointment.index', 'patient.appointment.index'],
+        };
+
+        foreach ($candidates as $name) {
+            if (Route::has($name)) {
+                $needed = Route::getRoutes()->getByName($name)->parameterNames();
+                $params = array_intersect_key(
+                    ['doctor' => $this->doctor?->id, 'patient' => $this->patient?->id],
+                    array_flip($needed)
+                );
+
+                return route($name, $params);
+            }
+        }
+
+        return route('home');
+    }
 }
